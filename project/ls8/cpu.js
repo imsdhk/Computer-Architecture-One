@@ -5,6 +5,12 @@
 /**
  * Class for simulating a simple Computer (CPU & memory)
  */
+
+   //  const LDI = 10011001;
+    //  const PRN = 01000011; 
+    //  const HLT = 00000001; 
+
+    
 class CPU {
 
     /**
@@ -53,10 +59,20 @@ class CPU {
      * op can be: ADD SUB MUL DIV INC DEC CMP
      */
     alu(op, regA, regB) {
+  
+
         switch (op) {
-            case 'MUL':
-                // !!! IMPLEMENT ME
+            case '10011001': // LDI
+                this.ram.write(regA, regB)
                 break;
+            case '01000011': // PRN
+                console.log(this.ram.read(regA))
+                break;
+            case '00000001': // HLT
+                this.stopClock()
+                break;
+            default:
+                console.log(`Unrecognized instruction ${op.toString(2)}`)
         }
     }
 
@@ -71,18 +87,24 @@ class CPU {
 
         // !!! IMPLEMENT ME
 
+        const IR = this.ram.read(this.PC).toString(2); 
+
         // Debugging output
-        //console.log(`${this.PC}: ${IR.toString(2)}`);
+        // console.log(`${this.PC}: ${IR.toString(2)}`);
 
         // Get the two bytes in memory _after_ the PC in case the instruction
         // needs them.
 
         // !!! IMPLEMENT ME
+        const operandA = this.ram.read(this.PC + 1); 
+        const operandB = this.ram.read(this.PC + 2); 
+        // console.log(afterPc1, afterPc2)
 
         // Execute the instruction. Perform the actions for the instruction as
         // outlined in the LS-8 spec.
 
         // !!! IMPLEMENT ME
+        this.alu(IR,operandA, operandB); 
 
         // Increment the PC register to go to the next instruction. Instructions
         // can be 1, 2, or 3 bytes long. Hint: the high 2 bits of the
