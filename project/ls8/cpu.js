@@ -6,11 +6,14 @@
  * Class for simulating a simple Computer (CPU & memory)
  */
 
-   //  const LDI = 10011001;
-    //  const PRN = 01000011; 
-    //  const HLT = 00000001; 
+const LDI = 0b10011001;
+const PRN = 0b01000011;
+const HLT = 0b00000001;
+const MUL = 0b10101010;
 
-    
+
+
+
 class CPU {
 
     /**
@@ -20,17 +23,19 @@ class CPU {
         this.ram = ram;
 
         this.reg = new Array(8).fill(0); // General-purpose registers R0-R7
-        
+
         // Special-purpose registers
         this.PC = 0; // Program Counter
     }
-    
+
     /**
      * Store value in memory address, useful for program loading
      */
     poke(address, value) {
         this.ram.write(address, value);
     }
+
+
 
     /**
      * Starts the clock ticking on the CPU
@@ -59,16 +64,37 @@ class CPU {
      * op can be: ADD SUB MUL DIV INC DEC CMP
      */
     alu(op, regA, regB) {
-  
+        // const program = [
+        //     "10011001", // LDI R0,8  Store 8 into R0
+        //     "00000000",
+        //     "00001000",
+        //     "10011001", // LDI R1,9
+        //     "00000001",
+        //     "00001001",
+        //     "10101010", // MUL R0,R1
+        //     "00000000",
+        //     "00000001",
+        //     "01000011", // PRN R0    Print the value in R0
+        //     "00000000",
+        //     "00000001"  // HLT       Halt and quit
+        // ]
+
 
         switch (op) {
-            case '10011001': // LDI
-                this.ram.write(regA, regB)
+            case MUL:
+                const result = this.reg[regA] * this.reg[regB];
+                this.reg[regA] = result;
+                // this.PC += 3; 
                 break;
-            case '01000011': // PRN
-                console.log(this.ram.read(regA))
+            case LDI: // LDI
+                this.reg[regA] = regB;
+                // this.PC += 3; 
                 break;
-            case '00000001': // HLT
+            case PRN: // PRN
+                console.log(this.reg[regA])
+                // this.PC += 2; 
+                break;
+            case HLT: // HLT
                 this.stopClock()
                 break;
             default:
@@ -87,7 +113,7 @@ class CPU {
 
         // !!! IMPLEMENT ME
 
-        const IR = this.ram.read(this.PC).toString(2); 
+        const IR = this.ram.read(this.PC);
 
         // Debugging output
         // console.log(`${this.PC}: ${IR.toString(2)}`);
@@ -96,22 +122,24 @@ class CPU {
         // needs them.
 
         // !!! IMPLEMENT ME
-        const operandA = this.ram.read(this.PC + 1); 
-        const operandB = this.ram.read(this.PC + 2); 
+        const operandA = this.ram.read(this.PC + 1); // register number
+        const operandB = this.ram.read(this.PC + 2);  // the value eg. 8 
         // console.log(afterPc1, afterPc2)
 
         // Execute the instruction. Perform the actions for the instruction as
         // outlined in the LS-8 spec.
 
         // !!! IMPLEMENT ME
-        this.alu(IR,operandA, operandB); 
+        this.alu(IR, operandA, operandB);
 
         // Increment the PC register to go to the next instruction. Instructions
         // can be 1, 2, or 3 bytes long. Hint: the high 2 bits of the
         // instruction byte tells you how many bytes follow the instruction byte
         // for any particular instruction.
-        
+
         // !!! IMPLEMENT ME
+        const instLen = (IR >> 6) + 1;
+        this.PC += instLen;
     }
 }
 
