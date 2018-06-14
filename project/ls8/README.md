@@ -243,7 +243,7 @@ exception to this.
   the beginning of the spec to see which register is the stack pointer, and
   where the stack starts in memory.
 
-### Implement Subroutine Calls
+### Implement Subroutine Calls(function)
 
 Back in my day, functions were called _subroutines_. In machine code, this
 enables you to jump to an address with the `CALL` instruction, and then return
