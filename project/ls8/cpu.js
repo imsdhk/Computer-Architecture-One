@@ -179,6 +179,7 @@ class CPU {
             case HLT: // HLT
                 this.stopClock()
                 break;
+                
             default:
                 console.log(`Unrecognized instruction ${op.toString(2)}`)
         }
