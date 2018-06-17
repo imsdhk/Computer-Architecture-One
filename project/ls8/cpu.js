@@ -212,7 +212,6 @@ class CPU {
         // Execute the instruction. Perform the actions for the instruction as
         // outlined in the LS-8 spec.
 
-        // !!! IMPLEMENT ME
         this.alu(IR, operandA, operandB);
 
         // const instructionCalls = instruction[IR]
